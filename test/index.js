@@ -20,7 +20,7 @@ describe("markup() should", () => {
 	};
 
 	function test(to_process, expected) {
-		index.markup(to_process, context).should.deep.equal(expected);
+		index().process(to_process, context).should.deep.equal(expected);
 	}
 
 	it("passthrough a string without templates", () => test("Normal string", "Normal string"));
