@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var pipe_handler = require("./pipe_handler");
 var expression_matcher = require("./expression_matcher");
 
 module.exports = function() {
@@ -28,7 +29,8 @@ function objectExpression(match, context) {
 	if (groups == null) {
 		throw new Error("token contents did not match expected format");
 	}
-	return _.get(context, groups.token);
+	var result = _.get(context, groups.token);
+	return pipe_handler.process(result, groups.pipes);
 }
 
 function stringTemplate(match, input, context, token_matcher) {
@@ -40,7 +42,8 @@ function stringTemplate(match, input, context, token_matcher) {
 		if (groups == null) {
 			throw new Error("token contents did not match expected format");
 		}
-		var addition = _.get(context, groups.token).toString();
+		var fragment = _.get(context, groups.token);
+		var addition = pipe_handler.process(fragment, groups.pipes).toString();
 		result += addition;
 		last_pos = token_matcher.lastIndex;
 		match = token_matcher.exec(input);
