@@ -1,11 +1,13 @@
-var namedRegex = require("named-js-regexp");
-var matcher = namedRegex(/^\s*(:<quote>[`"']?)(:<token>.+?)\k<quote>\s*(?:\|(:<pipes>.*?))?\s*$/);
+var matcher = /^\s*([`"']?)(.+?)\1\s*(?:\|(.*?))?\s*$/;
 
-module.exports = function(input) {
+module.exports = function (input) {
 	var result = matcher.exec(input);
-	if(result) {
-		result = result.groups();
-		result.pipes = result.pipes || "";
+	if (!result) {
+		return null;
 	}
-	return result;
+	return {
+		quote: result[1],
+		token: result[2],
+		pipes: result[3] || ""
+	};
 };
