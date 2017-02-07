@@ -1,0 +1,51 @@
+{
+  "name": "calfinated",
+  "version": "0.0.1",
+  "description": "Macro engine for token replacements in template strings",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha $NODE_DEBUG_OPTION"
+  },
+  "author": "Phillip Markert <pmarkert@ephisys.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+      "Mark": true
+    },
+    "rules": {
+      "indent": [
+        "error",
+        "tab",
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "named-js-regexp": "^1.3.2",
+    "named-regexp": "^0.1.1"
+  }
+}
