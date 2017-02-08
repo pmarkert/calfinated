@@ -7,15 +7,21 @@ describe("calfinated", () => {
 			foo_value: "foo",
 			bar_value: "bar",
 			phrase_value: "mock phrase",
-			number_value: 42,
+			number_value: 2,
 			true_value: true,
 			false_value: false,
 			null_value: null,
 			object_value: {
 				child_property: "child",
 				child_array: ["a", "b", "c"],
+				fruit_value: 'b',
 				child_object: {
 					grandchild: "yes"
+				},
+				index: {
+					a: "apples",
+					b: "bananas",
+					c: "cranberries"
 				}
 			}
 		};
@@ -30,10 +36,10 @@ describe("calfinated", () => {
 			it("process a template for a nested object string value", () => test("<% object_value.child_object.grandchild %>", "yes"));
 			it("process a template for a nested object array value", () => test("<% object_value.child_array %>", ["a", "b", "c"]));
 			it("process a template for a nested object array value child element at an index", () => test("<% object_value.child_array[1] %>", "b"));
-			it("process an inline template for a number value", () => test(" <% number_value %>", " 42"));
+			it("process an inline template for a number value", () => test(" <% number_value %>", " 2"));
 			it("process an inline template for a false value", () => test(" <% false_value %>", " false"));
 			it("process an inline template for a true value", () => test(" <% true_value %>", " true"));
-			it("process a complete template for a number value", () => test("<% number_value %>", 42));
+			it("process a complete template for a number value", () => test("<% number_value %>", 2));
 			it("process a complete template for a false value", () => test("<% true_value %>", true));
 			it("process a complete template for a true value", () => test("<% false_value %>", false));
 		});
@@ -47,6 +53,12 @@ describe("calfinated", () => {
 		describe("w/pipes", () => {
 			it("upcase pipe", () => test("<% foo_value | upcase %>", "FOO"));
 			it("optional pipe", () => test("<% undefined_value | optional(default) %>", "default"));
+		});
+		
+		describe("backtick replacements", () => {
+			it("objectExpression array lookup", () => test("<% object_value.child_array.`number_value` %>", "c"));
+			it("objectExpression index lookup", () => test("<% object_value.index.`object_value.fruit_value` %>", "bananas"));
+			it("stringTemplate array lookup", () => test("The answer is '<% object_value.child_array.`number_value` %>'", "The answer is 'c'"));
 		});
 	});
 });
