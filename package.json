@@ -2,7 +2,7 @@
   "name": "calfinated",
   "version": "0.0.1",
   "description": "Macro engine for token replacements in template strings",
-  "main": "index.js",
+  "main": "calfinated.js",
   "scripts": {
     "test": "mocha $NODE_DEBUG_OPTION"
   },
