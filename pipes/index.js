@@ -36,7 +36,7 @@ exports.is_null = function is_null(value) {
 };
 
 exports.join = function join(value, delimiter) {
-	if(_.isNil(delimiter) || _.isEmpty(delimiter)) {
+	if(_.isNil(delimiter) || delimiter=="") {
 		delimiter = ",";
 	}
 	else {

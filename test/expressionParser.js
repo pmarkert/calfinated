@@ -39,4 +39,5 @@ describe("expressionParser", () => {
 	it("pipes only no whitespace", () => test("|pipe", match("", "pipe", "")));
 	it("pipes only w/whitespace", () => test(" | pipe", match("", "pipe", "")));
 	it("pipes only intermediate whitespace", () => test("| pipe", match("", "pipe", "")));
+	it("pipes with tab whitespace", () => test(" array | join,\t ", match("array", "join,\t", "")));
 });
