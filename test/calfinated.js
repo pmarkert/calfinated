@@ -28,9 +28,21 @@ describe("calfinated", () => {
 		};
 
 		function test(to_process, expected) {
-			new index().process(to_process, context).should.deep.equal(expected);
+			var result = new index().process(to_process, context);
+			if(expected!=null) {
+				should.exist(result);
+				result.should.deep.equal(expected);
+			}
+			else {
+				should.not.exist(result);
+			}
 		}
 
+		describe("empty token", () => {
+			it("empty string w/ whitespace", () => test("<% %>", null));
+			it("empty string w/ pipe", () => test("<% | %>", null));
+		});
+		
 		describe("single token", () => {
 			it("passthrough a string without templates", () => test("Normal string", "Normal string"));
 			it("process a template for a string", () => test("<% foo_value %>", "foo"));
@@ -67,6 +79,10 @@ describe("calfinated", () => {
 			it("missing_key w/optional no whitespace", () => test("<% missing_key|optional %>", ""));
 			it("missing_key w/optional and default parens", () => test("<% missing_key| optional(asdf) %>", "asdf"));
 			it("missing_key w/optional and default comma", () => test("<% missing_key| optional,asdf %>", "asdf"));
+		});
+		
+		describe("pipe only", () => {
+			it("pipe only", () => test("<% | is_null %>", true));
 		});
 	});
 });

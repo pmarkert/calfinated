@@ -31,6 +31,10 @@ exports.optional = function optional(value, replacement) {
 	}
 };
 
+exports.is_null = function is_null(value) {
+	return value === null;
+};
+
 exports.join = function join(value, delimiter) {
 	if(_.isNil(delimiter) || _.isEmpty(delimiter)) {
 		delimiter = ",";
@@ -41,8 +45,8 @@ exports.join = function join(value, delimiter) {
 	return value.join(delimiter || ",");
 };
 
-// urlencode
-// urldecode
+// X urlencode
+// X urldecode
 // hash
 // base64encode
 // base64decode
@@ -73,6 +77,7 @@ exports.join = function join(value, delimiter) {
 // lessthanorequal
 // equals
 // notequals
+// isnull
 
 /* Boolean pipes */
 // parse

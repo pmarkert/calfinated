@@ -79,7 +79,10 @@ calfinated.prototype._stringTemplate = function stringTemplate(match, input, con
 };
 
 calfinated.prototype._getExpressionResult = function getExpressionResult(groups, context) {
-	if (groups.quote === "") {
+	if(_.isEmpty(groups.token)) {
+		return null;
+	}
+	else if (groups.quote === "") {
 		if(!_.has(context, groups.token)) {
 			// Check to see if optional pipe is first. If not, raise an error
 			if(!/^\s*optional(\W|$)/.test(groups.pipes)) {
@@ -91,4 +94,4 @@ calfinated.prototype._getExpressionResult = function getExpressionResult(groups,
 	else {
 		return groups.token;
 	}
-}
+};

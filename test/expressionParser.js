@@ -21,6 +21,7 @@ describe("expressionParser", () => {
 		};
 	}
 
+	it("empty string", () => test("", match("")));
 	it("token no whitespace", () => test("foo", match("foo")));
 	it("token w/whitespace", () => test(" foo ", match("foo")));
 	it("single quoted token no whitespace", () => test("'foo'", match("foo", "", "'")));
@@ -29,9 +30,13 @@ describe("expressionParser", () => {
 	it("double quoted token w/whitespace", () => test(' "foo" ', match("foo", "", '"')));
 	it("backtick quoted token no whitespace", () => test("`foo`", match("foo", "", "`")));
 	it("backtick quoted token w/whitespace", () => test(" `foo` ", match("foo", "", "`")));
-	it("pipes w/whitespace", () => test(" foo | pipes ", match("foo", " pipes", "")));
-	it("pipes no whitespace", () => test(" foo| pipes", match("foo", " pipes", "")));
+	it("pipes w/whitespace", () => test(" foo | pipes ", match("foo", "pipes", "")));
+	it("pipes no whitespace", () => test(" foo| pipes", match("foo", "pipes", "")));
 	it("pipes no whitespace internal", () => test(" foo|pipes", match("foo", "pipes", "")));
 	it("token having spaces", () => test("foo bar", match("foo bar")));
 	it("token having spaces and quotes", () => test("'foo bar'", match("foo bar", "", "'")));
+	it("literal with pipe", () => test("'| pipe'", match("| pipe", "", "'")));
+	it("pipes only no whitespace", () => test("|pipe", match("", "pipe", "")));
+	it("pipes only w/whitespace", () => test(" | pipe", match("", "pipe", "")));
+	it("pipes only intermediate whitespace", () => test("| pipe", match("", "pipe", "")));
 });
