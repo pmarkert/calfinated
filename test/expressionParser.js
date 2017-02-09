@@ -9,6 +9,7 @@ describe("expressionParser", () => {
 		// Any arguments after input are intended to be matches
 		var result = expression_matcher(input);
 		should.exist(result, "Should have matched and returned a value");
+		delete result.tag; // Not interested in comparing the full tag value
 		result.should.deep.equal(expected);
 	}
 

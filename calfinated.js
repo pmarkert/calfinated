@@ -1,9 +1,9 @@
 var _ = require("lodash");
-var expression_matcher = require("./expressionParser");
-var pipe_handler = require("./pipeProcessor");
+var expressionParser = require("./expressionParser");
+var pipeProcessor = require("./pipeProcessor");
 var default_pipes = require("./pipes/index");
 
-module.exports = function() {
+module.exports = function () {
 	return new calfinated();
 };
 
@@ -21,13 +21,21 @@ calfinated.prototype.process = function process(input, context) {
 	if (match == null) {
 		return this._passThrough(input, context);
 	}
-	
+
 	if (match[0].length === input.length) {
 		return this._objectExpression(match[1], context);
 	}
 	else {
 		return this._stringTemplate(match, input, context, token_matcher);
 	}
+};
+
+calfinated.prototype.missingKeyError = function missingKeyError(token, tag, context, pipes, self) {
+	throw new Error(`MissingKeyError for non-optional key: "${token}"`);
+};
+
+calfinated.prototype.pipeExecutionError = function pipeExecutionError(err, pipe, args) {
+	throw new Error(`Error executing pipe: '${pipe}', args: '${args}', err: ${err}`);
 };
 
 calfinated.prototype._passThrough = function passThrough(input) {
@@ -45,11 +53,11 @@ calfinated.prototype._replaceBackticks = function replaceBackticks(expression, c
 
 calfinated.prototype._objectExpression = function objectExpression(expression, context) {
 	expression = this._replaceBackticks(expression, context);
-	var groups = expression_matcher(expression);
+	var groups = expressionParser(expression);
 	if (groups == null) {
 		throw new Error("token contents did not match expected format");
 	}
-	return pipe_handler(getExpressionResult(groups, context), groups.pipes, this.pipes);
+	return pipeProcessor(this._getExpressionResult(groups, context), groups.pipes, this);
 };
 
 calfinated.prototype._stringTemplate = function stringTemplate(match, input, context, matcher) {
@@ -58,11 +66,11 @@ calfinated.prototype._stringTemplate = function stringTemplate(match, input, con
 	while (match != null) {
 		result += input.substring(last_pos, match.index);
 		var expression = this._replaceBackticks(match[1], context);
-		var groups = expression_matcher(expression);
+		var groups = expressionParser(expression);
 		if (groups == null) {
 			throw new Error("token contents did not match expected format");
 		}
-		result += pipe_handler(getExpressionResult(groups, context), groups.pipes, this.pipes);
+		result += pipeProcessor(this._getExpressionResult(groups, context), groups.pipes, this);
 		last_pos = matcher.lastIndex;
 		match = matcher.exec(input);
 	}
@@ -70,6 +78,17 @@ calfinated.prototype._stringTemplate = function stringTemplate(match, input, con
 	return result;
 };
 
-function getExpressionResult(groups, context) {
-	return groups.quote === "" ? _.get(context, groups.token) : groups.token;
+calfinated.prototype._getExpressionResult = function getExpressionResult(groups, context) {
+	if (groups.quote === "") {
+		if(!_.has(context, groups.token)) {
+			// Check to see if optional pipe is first. If not, raise an error
+			if(!/^\s*optional(\W|$)/.test(groups.pipes)) {
+				this.missingKeyError(groups.token, groups.tag, context, groups.pipes, this);
+			}
+		}
+		return _.get(context, groups.token);
+	}
+	else {
+		return groups.token;
+	}
 }

@@ -1,5 +1,6 @@
 var index = require("../calfinated");
 var should = require("chai").should(); // eslint-disable-line no-unused-vars
+var assert = require("assert");
 
 describe("calfinated", () => {
 	describe("process() should", () => {
@@ -52,13 +53,20 @@ describe("calfinated", () => {
 		
 		describe("w/pipes", () => {
 			it("upcase pipe", () => test("<% foo_value | upcase %>", "FOO"));
-			it("optional pipe", () => test("<% undefined_value | optional(default) %>", "default"));
 		});
 		
 		describe("backtick replacements", () => {
 			it("objectExpression array lookup", () => test("<% object_value.child_array.`number_value` %>", "c"));
 			it("objectExpression index lookup", () => test("<% object_value.index.`object_value.fruit_value` %>", "bananas"));
 			it("stringTemplate array lookup", () => test("The answer is '<% object_value.child_array.`number_value` %>'", "The answer is 'c'"));
+		});
+		
+		describe("missing and optional keys", () => {
+			it("missing_key", () => assert.throws(() => test("<% missing_key %>", ""), (err) => err.message.indexOf("MissingKeyError")>=0));
+			it("missing_key w/optional", () => test("<% missing_key | optional %>", ""));
+			it("missing_key w/optional no whitespace", () => test("<% missing_key|optional %>", ""));
+			it("missing_key w/optional and default parens", () => test("<% missing_key| optional(asdf) %>", "asdf"));
+			it("missing_key w/optional and default comma", () => test("<% missing_key| optional,asdf %>", "asdf"));
 		});
 	});
 });
