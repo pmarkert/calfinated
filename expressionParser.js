@@ -10,7 +10,7 @@ fragment = target | pipes
     arguments = comma-delimited list of argument values
 
  */
-var matcher = /^ *(?:((?!\|)[`"']?)(.+?)\1)? *(?:\| *(.*?))? *$/;
+var matcher = /^ *(?:((?!\|)[`"']?)(.+?)\1)? *(\|.*?)? *$/;
 var _ = require("lodash");
 
 module.exports = function (input) {

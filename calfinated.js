@@ -85,7 +85,7 @@ calfinated.prototype._getExpressionResult = function getExpressionResult(groups,
 	else if (groups.quote === "") {
 		if(!_.has(context, groups.token)) {
 			// Check to see if optional pipe is first. If not, raise an error
-			if(!/^\s*optional(\W|$)/.test(groups.pipes)) {
+			if(!/^\|\s*optional(\W|$)/.test(groups.pipes)) {
 				this.missingKeyError(groups.token, groups.tag, context, groups.pipes, this);
 			}
 		}

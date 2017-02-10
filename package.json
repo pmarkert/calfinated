@@ -1,6 +1,6 @@
 {
   "name": "calfinated",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Macro engine for token replacements in template strings",
   "main": "calfinated.js",
   "scripts": {
