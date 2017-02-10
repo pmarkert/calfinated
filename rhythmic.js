@@ -1,24 +1,27 @@
 module.exports = {
+	anchored,
 	any_character_but,
+	back_reference,
 	capture,
 	choice_of,
 	combine, 
 	greedy,
 	identifier,
+	negative_assertion,
 	nonCapturingGroup,
 	one_or_more, 
 	optional,
 	parenthetical,
 	quoted, 
-	space, 
+	optional_whitespace, 
 	zero_or_more
 };
 
 function quoted(content, index) {
-	return nonCapturingGroup(capture("['\"`]") + content + "\\" + index);
+	return nonCapturingGroup(capture("['\"`]") + content + back_reference(index));
 }
 
-function space() {
+function optional_whitespace() {
 	return zero_or_more("\\s");
 }
 
@@ -64,4 +67,16 @@ function combine() {
 
 function any_character_but(chars) {
 	return "[^" + chars + "]";
+}
+
+function anchored(content) {
+	return "^" + content + "$";
+}
+
+function negative_assertion(content) {
+	return "(?!" + content + ")";
+}
+
+function back_reference(index) {
+	return "\\" + index;
 }
