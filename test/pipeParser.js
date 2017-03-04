@@ -45,5 +45,6 @@ describe("pipeParser", () => {
 		it("complex parens", () => test("|date_parse(,America/Los_Angeles) | day() | date_format()", match("date_parse",",America/Los_Angeles"), match("day"), match("date_format")));
 		it("quoted argument with pipe, parens", () => test("|foo('|')", match("foo","'|'")));
 		it("quoted argument with pipe, comma", () => test("|foo,'|'", match("foo","'|'")));
+		it("quoted argument with comma, parens", () => test("|foo(',')", match("foo","','")));
 	});
 });

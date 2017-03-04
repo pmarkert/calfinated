@@ -38,6 +38,10 @@ calfinated.prototype.pipeExecutionError = function pipeExecutionError(err, pipe,
 	throw new Error(`Error executing pipe: '${pipe}', args: '${args}', err: ${err}`);
 };
 
+calfinated.prototype.pipeNotFound = function pipeNotFound(pipe) {
+	throw new Error(`Pipe not found: '${pipe}'`);
+};
+
 calfinated.prototype._passThrough = function passThrough(input) {
 	return input;
 };
