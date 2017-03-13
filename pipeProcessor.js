@@ -13,7 +13,7 @@ module.exports = function (input, pipe_expression, calfinated) {
 			calfinated.pipeNotFound(pipe_command.pipe, pipe_command.args);
 		} else {
 			try {
-				input = pipe_function.apply(calfinated, [input].concat(pipe_command.args.split(",")));
+				input = pipe_function.apply(calfinated, [input].concat(pipe_command.args.split(",").map(a => a.trim())));
 			}
 			catch(err) {
 				calfinated.pipeExecutionError(err, pipe_command.pipe, pipe_command.args);
