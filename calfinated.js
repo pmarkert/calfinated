@@ -1,32 +1,56 @@
-var _ = require("lodash");
 var expressionParser = require("./expressionParser");
 var pipeProcessor = require("./pipeProcessor");
-var default_pipes = require("./pipes/index");
 
-module.exports = function () {
-	return new calfinated();
+function try_require(instance, module_name) {
+	if (instance) {
+		return instance;
+	}
+	if (typeof require === 'undefined') {
+		throw new Error('This module requires ' + module_name);
+	}
+	return require(module_name);
+}
+
+module.exports = function (lodash, moment) {
+	return new calfinated(lodash, moment);
 };
 
-function calfinated() {
-	this.pipes = _.clone(default_pipes);
+function calfinated(lodash, moment) {
+	this._ = try_require(lodash, "lodash");
+	this.moment = try_require(moment, "moment");
+	this.pipes = require("./pipes")(this._, this.moment);
+	this.delimiters = ["<%", "%>"];
 }
 
 calfinated.prototype.add_pipes = function add_pipes(extra_pipes) {
-	_.assign(this.pipes, extra_pipes);
+	this._.assign(this.pipes, extra_pipes);
 };
 
-calfinated.prototype.process = function process(input, context) {
-	var token_matcher = /<%!?(.+?)%>/g;
-	var match = token_matcher.exec(input);
-	if (match == null) {
-		return this._passThrough(input, context);
+calfinated.prototype.process = function process(target, context, excluded_properties) {
+	excluded_properties = excluded_properties || [];
+	if (this._.isString(target)) {
+		var token_matcher = new RegExp(this.delimiters[0] + "!?(.+?)" + this.delimiters[1], "g");
+		var match = token_matcher.exec(target);
+		if (match == null) {
+			return target;
+		}
+		if (match[0].length === target.length) {
+			return this._objectExpression(match[1], context);
+		}
+		else {
+			return this._stringTemplate(match, target, context, token_matcher);
+		}
 	}
-
-	if (match[0].length === input.length) {
-		return this._objectExpression(match[1], context);
+	else if (this._.isArray(target)) {
+		return this._.map(target, i => this.process(i, context, excluded_properties));
+	}
+	else if (this._.isPlainObject(target) && !this._.isRegExp(target) && !this._.isFunction(target)) {
+		return this._.mapValues(target, (value, key) => {
+			return this._.includes(excluded_properties, key) ? value : this.process(value, context, excluded_properties);
+		});
 	}
 	else {
-		return this._stringTemplate(match, input, context, token_matcher);
+		return target;
 	}
 };
 
@@ -40,10 +64,6 @@ calfinated.prototype.pipeExecutionError = function pipeExecutionError(err, pipe,
 
 calfinated.prototype.pipeNotFound = function pipeNotFound(pipe) {
 	throw new Error(`Pipe not found: '${pipe}'`);
-};
-
-calfinated.prototype._passThrough = function passThrough(input) {
-	return input;
 };
 
 calfinated.prototype._replaceBackticks = function replaceBackticks(expression, context) {
@@ -83,17 +103,17 @@ calfinated.prototype._stringTemplate = function stringTemplate(match, input, con
 };
 
 calfinated.prototype._getExpressionResult = function getExpressionResult(groups, context) {
-	if(_.isEmpty(groups.token)) {
-		return null;
-	}
-	else if (groups.quote === "") {
-		if(!_.has(context, groups.token)) {
+	if (groups.quote === "") {
+		if (groups.token === "") {
+			return null;
+		}
+		if (!this._.has(context, groups.token)) {
 			// Check to see if optional pipe is first. If not, raise an error
-			if(!/^\|\s*optional(\W|$)/.test(groups.pipes)) {
+			if (!/^\|\s*optional(\W|$)/.test(groups.pipes)) {
 				this.missingKeyError(groups.token, groups.tag, context, groups.pipes, this);
 			}
 		}
-		return _.get(context, groups.token);
+		return this._.get(context, groups.token);
 	}
 	else {
 		return groups.token;
