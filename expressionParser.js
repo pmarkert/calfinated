@@ -10,7 +10,7 @@ fragment = target | pipes
     arguments = comma-delimited list of argument values
 
  */
-var assert = require("assert");
+
 var rhy = require("./rhythmic");
 
 var pipe_symbol = "\\|";
@@ -30,12 +30,11 @@ var pattern = rhy.anchored(
 	rhy.zero_or_more(" ")
 );
 
-var _ = require("lodash");
 var matcher = new RegExp(pattern);
 
 module.exports = function (input) {
 	var result = matcher.exec(input);
-	return _.isNil(result) ? null : {
+	return result == null ? null : {
 		tag: result[0],
 		quote: result[1] || "",
 		token: result[2] || "",

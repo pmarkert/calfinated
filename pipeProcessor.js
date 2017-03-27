@@ -1,4 +1,3 @@
-var _ = require("lodash");
 var pipe_matcher = require("./pipeParser");
 
 module.exports = function (input, pipe_expression, calfinated) {
