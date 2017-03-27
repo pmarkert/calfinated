@@ -5,7 +5,7 @@
   "main": "calfinated.js",
   "scripts": {
     "test": "mocha $NODE_DEBUG_OPTION",
-    "build": "browserify --no-bundle-external -t [ babelify --presets [ es2015 ] ] calfinated.js -r ./calfinated.js:calfinated -o browser.js"
+    "build": "browserify --no-bundle-external -t [ babelify --presets [ es2015 ] ] calfinated.js -r ./calfinated.js:calfinated -o browser/calfinated.js && browserify --no-bundle-external -t [ babelify --presets [ es2015 ] ] calfinated.js -g uglifyify -r ./calfinated.js:calfinated -o browser/calfinated.min.js "
   },
   "author": "Phillip Markert <pmarkert@ephisys.com>",
   "license": "ISC",
