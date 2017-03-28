@@ -119,8 +119,8 @@ module.exports = function (_, moment) {
 		csv_safe: csv_safe,
 		substr: substr,
 		substring: substring,
-		urlencode: encodeURIComponent,
-		urldecode: decodeURIComponent,
+		encodeURIComponent: encodeURIComponent, urlencode: encodeURIComponent,
+		decodeURIComponent: decodeURIComponent, urldecode: decodeURIComponent,
 		match: match,
 		replace: replace,
 		trim: trim,
@@ -227,20 +227,17 @@ module.exports = function (_, moment) {
 	}
 
 	function match(val, pattern, group) {
+		debugger;
 		var result = _extract_regex(pattern).exec(val);
-		if (!group) {
-			return result;
-		} else {
-			return result[parseInt(group)];
-		}
+		return result[parseInt(group || 0)];
 	}
 
 	function replace(val, pattern, replacement) {
 		return val.replace(_extract_regex(pattern), replacement);
 	}
 
-	function trim(value, default_value) {
-		return (value || default_value || "").toString().trim();
+	function trim(value) {
+		return String(value).trim();
 	}
 
 	/* Array operations */
@@ -249,31 +246,38 @@ module.exports = function (_, moment) {
 			delimiter = ",";
 		} else {
 			// If the delimiter is surrounded by single or double-quotes, then just use the contents
-			delimiter = /^(['"])?(.+?)\1$/.exec(delimiter)[2];
+			delimiter = _.defaultTo(/^(['"])?(.*?)\1$/.exec(delimiter)[2], ',');
 		}
-		return value.join(delimiter || ",");
+		return value.join(delimiter);
 	}
 
 	function split(val, delimiter) {
+		if (_.isNil(delimiter) || delimiter == "") {
+			delimiter = ",";
+		} else {
+			// If the delimiter is surrounded by single or double-quotes, then just use the contents
+			delimiter = _.defaultTo(/^(['"])?(.*?)\1$/.exec(delimiter)[2], ',');
+		}
 		return String(val).split(delimiter);
 	}
 
 	/* Utility operations */
 	function optional(val, replacement) {
-		return _.isUndefined(val) ? replacement : val;
+		return _.isNil(val) ? replacement : val;
 	}
 
 	function not(val) {
 		return !boolean(val);
 	}
 
-	function random(val, min, max, whole) {
-		if (is_empty(min)) {
+	function random(val, min, max, asFloat) {
+		if (!is_empty(min)) {
 			// If we have parameter values, use those and ignore the pipeline value
 			if (_.isNil(max)) {
 				max = min;
 				min = 0;
 			}
+
 			var minValue = _.parseInt(min);
 			if (_.isNaN(minValue)) {
 				throw new Error("Unable to parse value for min as integer: '" + min + "'");
@@ -282,7 +286,7 @@ module.exports = function (_, moment) {
 			if (_.isNaN(maxValue)) {
 				throw new Error("Unable to parse value for max as integer: '" + max + "'");
 			}
-			var asFloating = !(whole == "true");
+			var asFloating = boolean(optional(asFloat, false));
 			return _.random(minValue, maxValue, asFloating);
 		}
 		// Otherwise, let's use the passed in value
@@ -306,36 +310,36 @@ module.exports = function (_, moment) {
 	/* Mathematical operations */
 	function add(num, n) {
 		if (_.isArray(num)) {
-			return _.reduce(num, function (sum, n) {
+			return _.reduce(_.tail(num), function (sum, n) {
 				return _.toNumber(sum) + _.toNumber(n);
-			}, 0);
+			}, _.head(num));
 		}
 		return _.toNumber(num) + _.toNumber(n);
 	}
 
 	function subtract(num, n) {
 		if (_.isArray(num)) {
-			return _.reduce(num, function (sum, n) {
+			return _.reduce(_.tail(num), function (sum, n) {
 				return _.toNumber(sum) - _.toNumber(n);
-			}, 0);
+			}, _.head(num));
 		}
 		return _.toNumber(num) - _.toNumber(n);
 	}
 
 	function multiplied_by(num, n) {
 		if (_.isArray(num)) {
-			return _.reduce(num, function (sum, n) {
+			return _.reduce(_.tail(num), function (sum, n) {
 				return _.toNumber(sum) * _.toNumber(n);
-			}, 0);
+			}, _.head(num));
 		}
 		return _.toNumber(num) * _.toNumber(n);
 	}
 
 	function divided_by(num, n) {
 		if (_.isArray(num)) {
-			return _.reduce(num, function (sum, n) {
+			return _.reduce(_.tail(num), function (sum, n) {
 				return _.toNumber(sum) / _.toNumber(n);
-			}, 0);
+			}, _.head(num));
 		}
 		return _.toNumber(num) / _.toNumber(n);
 	}

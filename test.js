@@ -1,0 +1,12 @@
+var calfinated = require("./calfinated")();
+console.log(calfinated.process("<% fruit | join() %>", { fruit: [ "apples", "bananas", "cherries" ] }));
+console.log(calfinated.process("<% fruit | join('') %>", { fruit: [ "apples", "bananas", "cherries" ] }));
+console.log(calfinated.process("<% fruit | join(' ') %>", { fruit: [ "apples", "bananas", "cherries" ] }));
+console.log(calfinated.process("<% fruit | join(',') %>", { fruit: [ "apples", "bananas", "cherries" ] }));
+console.log(calfinated.process("<% fruit | split() %>", { fruit: "apples,bananas,cherries" }));
+console.log(calfinated.process("<% fruity | optional(asdf) %>", { fruit: "apples,bananas,cherries" }));
+console.log(calfinated.process("<% | random(1,6) %>"));
+console.log(calfinated.process("<% | random(6) %>"));
+console.log(calfinated.process("<% age | add(3) %>", { age: 18 }));
+console.log(calfinated.process("<% ages | add %>", { ages: [ 18, 21 ] }));
+console.log(calfinated.process("<% ages | subtract %>", { ages: [ 18, 21, 3 ] }));
