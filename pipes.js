@@ -109,11 +109,16 @@ module.exports = function (_, moment) {
 	}
 
 	function csv_safe(val) {
-		val = String(val).split('"').join('\"');
-		if (val.indexOf(",") >= 0) {
-			val = '"' + val + '"';
+		if(_.has(val, "csv_string")) {
+			return val.csv_string;
 		}
-		return val;
+		else {
+			val = String(val).split('"').join('\"');
+			if (val.indexOf(",") >= 0) {
+				val = '"' + val + '"';
+			}
+			return val;
+		}
 	}
 
 	function substr(val, start, length) {
