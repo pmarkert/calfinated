@@ -83,8 +83,13 @@ module.exports = function (_, moment) {
 		return _.toNumber(val);
 	}
 
-	function json(val) {
-		return JSON.stringify(val, null, 2);
+	function json(val, unformatted) {
+		if(unformatted==="true" || unformatted===true) {
+			return JSON.stringify(val);
+		}
+		else {
+			return JSON.stringify(val, null, 2);
+		}
 	}
 
 	function json_parse(val) {
@@ -113,8 +118,8 @@ module.exports = function (_, moment) {
 			return val.csv_string;
 		}
 		else {
-			val = String(val).split('"').join('\"');
-			if (val.indexOf(",") >= 0) {
+			val = String(val).split('"').join('""');
+			if ((val.indexOf(",") >= 0) || (val.indexOf("\n") >= 0)) {
 				val = '"' + val + '"';
 			}
 			return val;
