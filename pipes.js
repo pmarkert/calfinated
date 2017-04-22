@@ -5,6 +5,8 @@ module.exports = function (_, moment) {
 		boolean,
 		integer,
 		number,
+                date,
+                moment: _moment,
 		json,
 		json_parse,
 		is_null,
@@ -144,6 +146,9 @@ module.exports = function (_, moment) {
 	}
 
 	function trim(value) {
+		if(_.isNil(value)) {
+			return "";
+		}
 		return String(value).trim();
 	}
 
@@ -310,7 +315,7 @@ module.exports = function (_, moment) {
 	function date_format(val, format, timezone) {
 		timezone = trim(timezone);
 		format = trim(format);
-		val = _coerce_date(val, timezone);
+		val = _moment(val, timezone);
 		if (!val.isValid()) {
 			throw new Error("Could not convert object to date - " + val.toString());
 		}
@@ -332,7 +337,7 @@ module.exports = function (_, moment) {
 
 	function date_add(val, count, interval) {
 		interval = trim(interval);
-		return _coerce_date(val).clone().add(parseInt(count), interval);
+		return _moment(val).clone().add(parseInt(count), interval);
 	}
 
 	function date_subtract(val, count, interval) {
@@ -340,12 +345,16 @@ module.exports = function (_, moment) {
 	}
 
 	function start_of(val, period) {
-		return _coerce_date(val).clone().startOf((period || "day").trim());
+		return _moment(val).clone().startOf((period || "day").trim());
 	}
 
 	function end_of(val, period) {
-		return _coerce_date(val).clone().endOf((period || "day").trim());
+		return _moment(val).clone().endOf((period || "day").trim());
 	}
+
+        function date(val, timezone) {
+		return _moment(val, timezone).toDate();
+        }
 
 	function _get_parser(timezone) {
 		if (is_empty(timezone)) {
@@ -356,7 +365,7 @@ module.exports = function (_, moment) {
 		}
 	}
 
-	function _coerce_date(val, timezone) {
+	function _moment(val, timezone) {
 		if (_.isNil(val)) {
 			val = new Date();
 		}
