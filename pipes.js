@@ -129,11 +129,21 @@ module.exports = function (_, moment) {
 	}
 
 	function substr(val, start, length) {
-		return val.substr(_.toNumber(start), _.toNumber(length));
+		if(_.isNil(length) || length=="") {
+			return val.substr(_.toNumber(start));
+		}
+		else {
+			return val.substr(_.toNumber(start), _.toNumber(length));
+		}
 	}
 
 	function substring(val, start, end) {
-		return val.substring(_.toNumber(start), _.toNumber(end));
+		if(_.isNil(end) || end=="") {
+			return val.substring(_.toNumber(start));
+		}
+		else {
+			return val.substring(_.toNumber(start), _.toNumber(end));
+		}
 	}
 
 	function match(val, pattern, group) {
