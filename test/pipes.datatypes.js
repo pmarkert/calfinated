@@ -33,10 +33,11 @@ describe("pipes.Data-type operations", () => {
 			return function() {
 				try {
 					pipes.boolean(input);
-					throw new Error("Expected error to be thrown.");
 				}
 				catch(err) {
+					return;
 				}
+				throw new Error("Expected error to be thrown.");
 			};
 		}
 

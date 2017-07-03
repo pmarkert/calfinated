@@ -31,6 +31,7 @@ module.exports = function (_, moment) {
 		/* Utility operations */
 		optional,
 		not,
+		choose,
 		random,
 
 		/* Mathematical operations */
@@ -192,6 +193,10 @@ module.exports = function (_, moment) {
 
 	function not(val) {
 		return !boolean(val);
+	}
+
+	function choose(val, true_value, false_value) {
+		return boolean(val) ? true_value : false_value;
 	}
 
 	function random(val, min, max, asFloat) {
