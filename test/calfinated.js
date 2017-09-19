@@ -55,6 +55,7 @@ describe("calfinated", () => {
 			it("process a complete template for a number value", () => test("<% number_value %>", 2));
 			it("process a complete template for a false value", () => test("<% true_value %>", true));
 			it("process a complete template for a true value", () => test("<% false_value %>", false));
+			it("process a template for the root object", () => test("<% . %>", context));
 		});
 
 		describe("multiple tokens", () => {

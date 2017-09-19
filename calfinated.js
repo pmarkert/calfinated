@@ -107,6 +107,9 @@ calfinated.prototype._getExpressionResult = function getExpressionResult(groups,
 		if (groups.token === "") {
 			return null;
 		}
+		else if(groups.token === ".") {
+			return context;
+                }
 		if (!this._.has(context, groups.token)) {
 			// Check to see if optional pipe is first. If not, raise an error
 			if (!/^\|\s*optional(\W|$)/.test(groups.pipes)) {
