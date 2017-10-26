@@ -12,7 +12,7 @@ describe("pipes.csv_safe", () => {
 	
 	it("string", test("string", "string"));
 	it("string w/comma", test('string,', '"string,"'));
-	it("string w/quote", test('string"', 'string""'));
+	it("string w/quote", test('string"', '"string"""'));
 	it("empty string", test("", ""));
 	it("a number", test(3, "3"));
 	it("true", test(true, "true"));

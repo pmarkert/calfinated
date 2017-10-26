@@ -13,8 +13,8 @@ module.exports = function (_, moment) {
 		is_empty,
 
 		/* String operations */
-		upcase, toUpperCase: upcase,
-		downcase, toLowerCase: downcase,
+		upcase, toUpperCase: upcase, toUpper: upcase,
+		downcase, toLowerCase: downcase, toLower: downcase,
 		csv_safe,
 		substr,
 		substring,
@@ -122,7 +122,7 @@ module.exports = function (_, moment) {
 		}
 		else {
 			val = String(val).split('"').join('""');
-			if ((val.indexOf(",") >= 0) || (val.indexOf("\n") >= 0)) {
+			if ((val.indexOf(",") >= 0) || (val.indexOf("\n") >= 0) || (val.indexOf("\"") >=0)) {
 				val = '"' + val + '"';
 			}
 			return val;
